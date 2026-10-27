@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+ <meta charset="UTF-8">
+ <title>CBNU AIR 좌석 발열 모니터링</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body>
+ <div class="page-wrap">
+ <div class="dashboard-wrap">
+ <img class="dashboard-bg" src="/static/plane_dashboard_clean.svg" alt="CBNU AIR Dashboard">
+ <div class="qr-live">
+ <div class="qr-title">접속 QR</div>
+ <img id="pageQrImage" src="" alt="Dashboard QR Code">
+ <div class="qr-caption">스캔하여<br>현재 페이지 접속</div>
+ </div>
+ <div class="live-top-status">
+ <span class="live-dot"></span>
+ <span>실시간 모니터링</span>
+ <span id="liveClock" class="live-clock">--:--:-- KST</span>
+ </div>
+ <div class="seat-status-live">
+ <div class="seat-count-line">
+ <span id="detectedSeatCount" class="seat-count-now">0</span>
+ <span class="seat-count-total">/ 6</span>
+ </div>
+ <div class="seat-count-label">SEATS ONLINE</div>
+ <div id="seatStatusChip" class="seat-chip warning">
+ <span id="seatChipIcon" class="seat-chip-dot">-</span>
+ <span id="seatChipText">좌석 인식 대기 중</span>
+ </div>
+ </div>
+ <div class="risk-live">
+ <div class="risk-content">
+ <div id="riskCircle" class="risk-circle" style="--percent-deg: 0deg;">
+ <div class="risk-percent-text">
+ <div id="normalPercent" class="risk-percent-num">0%</div>
+<div class="risk-percent-label">정상</div>
+ </div>
+ </div>
+ <div class="risk-rows">
+ <div class="risk-row">
+ <div class="risk-left">
+ <span class="risk-dot ok"></span>
+<span>정상</span>
+ </div>
+<span id="okCount" class="risk-value">0</span>
+ </div>
+ <div class="risk-row">
+ <div class="risk-left">
+ <span class="risk-dot warn"></span>
+<span>주의</span>
+ </div>
+<span id="warnCount" class="risk-value">0</span>
+ </div>
+ <div class="risk-row">
+ <div class="risk-left">
+ <span class="risk-dot hot"></span>
+<span>위험</span>
+ </div>
+<span id="hotCount" class="risk-value">0</span>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div id="A1" class="seat-overlay nodetect" onclick="openSeatPanel('A1')">
+ <div class="seat-code">A1</div>
+ <div class="seat-status">NO DETECT</div>
+ <div class="seat-heat">0.0℃ / -</div>
+ </div>
+ <div id="A2" class="seat-overlay nodetect" onclick="openSeatPanel('A2')">
+ <div class="seat-code">A2</div>
+ <div class="seat-status">NO DETECT</div>
+ <div class="seat-heat">0.0℃ / -</div>
+ </div>
+ <div id="A3" class="seat-overlay nodetect" onclick="openSeatPanel('A3')">
+ <div class="seat-code">A3</div>
+ <div class="seat-status">NO DETECT</div>
+ <div class="seat-heat">0.0℃ / -</div>
+ </div>
+ <div id="B1" class="seat-overlay nodetect" onclick="openSeatPanel('B1')">
+ <div class="seat-code">B1</div>
+ <div class="seat-status">NO DETECT</div>
+ <div class="seat-heat">0.0℃ / -</div>
+ </div>
+ <div id="B2" class="seat-overlay nodetect" onclick="openSeatPanel('B2')">
+ <div class="seat-code">B2</div>
+ <div class="seat-status">NO DETECT</div>
+ <div class="seat-heat">0.0℃ / -</div>
+ </div>
+ <div id="B3" class="seat-overlay nodetect" onclick="openSeatPanel('B3')">
+ <div class="seat-code">B3</div>
+ <div class="seat-status">NO DETECT</div>
+ <div class="seat-heat">0.0℃ / -</div>
+ </div>
+ <div class="system-live">
+ <div class="system-row">
+ <span>모니터링 시스템</span>
+ <span>v2.1.0</span>
+ </div>
+ <div class="system-row">
+ <span>센서 상태</span>
+ <span id="sensorState">대기</span>
+ </div>
+ <div class="system-row">
+ <span>업데이트 시간</span>
+ <span id="updateTime">--:--:--</span>
+ </div>
+ <div class="system-row">
+ <span>데이터 주기</span>
+ <span>0.3 sec</span>
+ </div>
+ <div class="system-row">
+ <span>연결 상태</span>
+ <span id="connectState"><span class="online-dot"></span>온라인</span>
+ </div>
+ </div>
+<div class="temp-live">
+ <div class="temp-row">
+ <div class="temp-left">
+ <span class="temp-dot ok"></span>
+ <span>정상</span>
+ </div>
+ <span class="temp-value">20 ~ 29℃</span>
+ </div>
+ <div class="temp-row">
+ <div class="temp-left">
+ <span class="temp-dot warn"></span>
+ <span>주의</span>
+ </div>
+ <span class="temp-value">30 ~ 39℃</span>
+ </div>
+ <div class="temp-row">
+ <div class="temp-left">
+ <span class="temp-dot hot"></span>
+ <span>위험</span>
+ </div>
+ <span class="temp-value">43 ~ 47℃</span>
+ </div>
+</div>
+ </div>
+ </div>
+ <div id="sidePanel" class="side-panel right-mode">
+ <div class="panel-header">
+ <div>
+ <h2 id="panelTitle" class="panel-title">좌석 상세 정보</h2>
+ <div id="panelSubtitle" class="panel-subtitle">좌석을 클릭하면 상세 정보가 표시됩니다.</div>
+ </div>
+ <button class="panel-close" onclick="closeSeatPanel()">×</button>
+ </div>
+ <div class="panel-body">
+ <div id="panelState" class="panel-state wait-text">NO DETECT</div>
+ <div id="panelMessage" class="panel-message">
+ 좌석을 선택해주세요.
+ </div>
+ <div class="panel-info-grid">
+ <div class="info-card">
+ <div class="info-label">MAX HEAT</div>
+ <div id="panelMaxHeat" class="info-value">0</div>
+ </div>
+ <div class="info-card">
+ <div class="info-label">AVG HEAT</div>
+ <div id="panelMeanHeat" class="info-value">0</div>
+ </div>
+ <div class="info-card">
+ <div class="info-label">OBJECT</div>
+ <div id="panelObject" class="info-value">-</div>
+ </div>
+ <div class="info-card">
+ <div class="info-label">SEAT</div>
+ <div id="panelSeat" class="info-value">-</div>
+ </div>
+ </div>
+ <div id="panelImageBox" class="panel-image-box">
+ 좌석 crop 영상을 기다리는 중입니다.
+ </div>
+ </div>
+ </div>
+ <script src="/static/dashboard.js" defer></script>
+</body>
+</html>
